@@ -29,7 +29,7 @@ Instead of manually designing attack models, our system:
 Package
 ------------
 
-The autosca-wallet is a python package for automatically finding optimal architectures when performing a side channel attack.
+The deepscapy is a python package for automatically finding optimal architectures when performing a side channel attack.
 Its Ranking Loss (RKL) implementation is based on https://github.com/gabzai/Ranking-Loss-SCA.
 
 
@@ -42,7 +42,7 @@ You can install deepsca using::
 
 Dependencies
 ------------
-autosca-wallet depends on NumPy, SciPy, matplotlib, scikit-learn, joblib and tqdm, tensorflow, tensorflow_addons, keras_tuner, keras, autokeras.
+deepscapy depends on NumPy, SciPy, matplotlib, scikit-learn, joblib and tqdm, tensorflow, tensorflow_addons, keras_tuner, keras, autokeras.
 For data processing and generation you will also need and pandas.
 
 
