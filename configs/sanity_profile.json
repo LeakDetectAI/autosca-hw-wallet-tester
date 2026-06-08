@@ -1,0 +1,15 @@
+{
+  "description": "Sanity profile for quick environment validation (not a real attack). Trains the baseline ASCAD CNN for 2 epochs on ASCAD_desync0 with categorical crossentropy. Run with: python exp_baseline_models_run.py --dataset ASCAD_desync0 --model_name ascad_cnn_baseline --loss_function categorical_crossentropy --epochs 2 --batch_size 200",
+  "dataset": "ASCAD_desync0",
+  "model_name": "ascad_cnn_baseline",
+  "loss_function": "categorical_crossentropy",
+  "epochs": 2,
+  "batch_size": 200,
+  "leakage_model": "ID",
+  "weight_averaging": false,
+  "use_tuner": false,
+  "expected_artifacts": {
+    "model": "trained_models/non_tuned_models/ascad_desync0_ascad_cnn_baseline_700_CCE.tf/",
+    "log": "logs/ascad_desync0_ascad_cnn_baseline_700_CCE.log"
+  }
+}
