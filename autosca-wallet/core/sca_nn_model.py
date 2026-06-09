@@ -3,11 +3,9 @@ import math
 import os
 
 import numpy as np
-from keras.optimizers import RMSprop
+from keras.optimizers import RMSprop, SWA
 from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint
-from tensorflow_addons.callbacks import AverageModelCheckpoint
-from tensorflow_addons.optimizers import SWA
 
 from deepscapy.callbacks import OneCycleLR
 from deepscapy.constants import ONED_CNN, TWOD_CNN_RECT, TWOD_CNN_SQR, MLP, TRAINED_MODELS_TUNED
@@ -75,10 +73,7 @@ class SCANNModel(SCABaseModel):
     def fit(self, X, y, epochs=200, batch_size=100, verbose=1, **kwargs):
         X, y = self.reshape_inputs(X, y)
         check_file_exists(os.path.dirname(self.model_file))
-        if not self.weight_averaging:
-            save_model = ModelCheckpoint(self.model_file)
-        else:
-            save_model = AverageModelCheckpoint(filepath=self.model_file, update_weights=True)
+        save_model = ModelCheckpoint(self.model_file)
         callbacks = [save_model]
         self.logger.info(dict(batch_size=batch_size, epochs=epochs, callbacks=callbacks, verbose=verbose))
         self.logger.info(dict(X=X.shape, y=y.shape))
@@ -94,10 +89,7 @@ class SCANNModel(SCABaseModel):
     def fit_lr(self, X, y, epochs=200, batch_size=100, max_lr=1e-3, verbose=0, **kwargs):
         X, y = self.reshape_inputs(X, y)
         check_file_exists(os.path.dirname(self.model_file))
-        if not self.weight_averaging:
-            save_model = ModelCheckpoint(self.model_file)
-        else:
-            save_model = AverageModelCheckpoint(filepath=self.model_file, update_weights=True)
+        save_model = ModelCheckpoint(self.model_file)
         # This doesn't work for now, check later to fix the issue, update 19.02.2022 issue resolved
         lr_manager = OneCycleLR(max_lr=max_lr, batch_size=batch_size, samples=X.shape[0], end_percentage=0.2,
                                 scale_percentage=0.1, maximum_momentum=None, minimum_momentum=None, verbose=True)

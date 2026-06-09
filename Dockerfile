@@ -17,8 +17,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
         tensorflow==2.16.1 \
         keras==3.3.3 \
         keras-tuner==1.4.7 \
-        autokeras==2.0.0 \
-        tensorflow-addons==0.23.0 && \
+        autokeras==2.0.0 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Install the package itself

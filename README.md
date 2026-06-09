@@ -42,7 +42,7 @@ You can install deepsca using::
 
 Dependencies
 ------------
-deepscapy depends on NumPy, SciPy, matplotlib, scikit-learn, joblib and tqdm, tensorflow, tensorflow_addons, keras_tuner, keras, autokeras.
+deepscapy depends on NumPy, SciPy, matplotlib, scikit-learn, joblib, tqdm, tensorflow, keras_tuner, keras, and autokeras.
 For data processing and generation you will also need and pandas.
 
 
