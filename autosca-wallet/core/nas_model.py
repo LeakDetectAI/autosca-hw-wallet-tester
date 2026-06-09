@@ -3,7 +3,7 @@ import math
 import os
 
 import numpy as np
-from keras.saving.save import load_model
+from keras.models import load_model
 from sklearn.base import BaseEstimator, ClassifierMixin
 from tensorflow.python.keras.utils.np_utils import to_categorical
 

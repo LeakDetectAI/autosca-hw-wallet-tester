@@ -207,3 +207,36 @@ If you use this toolkit in your research, please cite our work:
 ## 📧 Contact Information
 For any questions or feedback, please contact Pritha Gupta at prithagupta.nsit@icloud.com and marketing@tickervalue.com
 
+## Quick Start (Sanity Check)
+
+To quickly validate your environment, download the ASCAD dataset to `datasets/ASCAD.h5` and execute the sanity check scripts using a reduced number of traces and epochs.
+
+### 1. CNN Baseline Sanity Check
+Run the sanity check for the CNN baseline model:
+```bash
+python exp_sanity_run.py
+```
+
+**Expected Artifacts:**
+- A completed single-epoch training pass over a subset of traces.
+- **`sanity_model.weights.h5`**: The learned weights of the baseline CNN model saved to the local directory.
+- **`trained_models/non_tuned_models/sanity_ascad_cnn.keras`**: The trained baseline CNN model.
+- **Attack Results Console Output**: Guessing Entropy and Mean Rank vulnerability scores printed to the console.
+
+### 2. TimesFM Baseline Sanity Check
+Run the sanity check for the Google TimesFM baseline model:
+```bash
+python exp_timesfm_sanity_run.py
+```
+
+**Expected Artifacts:**
+- Extraction of TimesFM embeddings and a single-epoch training pass over the MLP head.
+- **`sanity_timesfm_model.weights.h5`**: The learned weights of the TimesFM model head saved to the local directory.
+- **`trained_models/non_tuned_models/sanity_timesfm_baseline.keras`**: The trained MLP head model.
+- **Attack Results Console Output**: Guessing Entropy and Mean Rank vulnerability scores printed to the console.
+
+## Recommended Baseline
+
+For comprehensive side-channel evaluation and benchmarking, we recommend the following setup:
+- **Dataset**: [ASCAD](https://github.com/ANSSI-FR/ASCAD) (specifically the Fixed Key/Variable Key variations).
+- **Model**: For advanced analysis , we recommend adopting [Google TimesFM](https://github.com/google-research/timesfm) as the baseline for time-series profiling and zero-shot attack modeling.

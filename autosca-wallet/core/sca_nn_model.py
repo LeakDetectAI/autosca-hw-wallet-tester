@@ -5,9 +5,13 @@ import os
 import numpy as np
 from keras.optimizers import RMSprop
 from keras.utils import to_categorical
-from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tensorflow_addons.callbacks import AverageModelCheckpoint
-from tensorflow_addons.optimizers import SWA
+from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint as AverageModelCheckpoint
+
+try:
+    from tensorflow_addons.optimizers import SWA
+except ImportError:
+    SWA = None
 
 from deepscapy.callbacks import OneCycleLR
 from deepscapy.constants import ONED_CNN, TWOD_CNN_RECT, TWOD_CNN_SQR, MLP, TRAINED_MODELS_TUNED
@@ -38,9 +42,9 @@ class SCANNModel(SCABaseModel):
             raise Warning('Input reshaping not defined for the specified model type {}'.format(model_type))
         # check the model path, make the default one in the deep-learning-sca, fileformat dataset_type_model_lf
         if '_tuned' not in self.model_name:
-            self.model_file = os.path.join(get_trained_models_path(), '{}.tf'.format(self.model_name))
+            self.model_file = os.path.join(get_trained_models_path(), '{}.keras'.format(self.model_name))
         else:
-            self.model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.tf'.format(self.model_name))
+            self.model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.keras'.format(self.model_name))
 
         self.model, self.scoring_model = self._construct_model_(kernel_regularizer=self.kernel_regularizer,
                                                                 kernel_initializer=self.kernel_initializer)
