@@ -1,16 +1,16 @@
 import tensorflow as tf
 from keras import backend as K
-from tensorflow_addons.utils.types import FloatTensorLike, TensorLike
-from tensorflow_addons.losses import sigmoid_focal_crossentropy
+
+
 @tf.function
 def sigmoid_focal_crossentropy(
-        y_true: TensorLike,
-        y_pred: TensorLike,
-        alpha: FloatTensorLike = 0.25,
-        gamma: FloatTensorLike = 2.0,
-        from_logits: bool = False,
+        y_true,
+        y_pred,
+        alpha=0.25,
+        gamma=2.0,
+        from_logits=False,
         base_loss='categorical_crossentropy'
-) -> tf.Tensor:
+):
     """Implements the focal loss function.
 
     Focal loss was first introduced in the RetinaNet paper

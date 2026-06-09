@@ -5,7 +5,7 @@ import os
 import numpy as np
 from keras.saving.save import load_model
 from sklearn.base import BaseEstimator, ClassifierMixin
-from tensorflow.python.keras.utils.np_utils import to_categorical
+from keras.utils import to_categorical
 
 from deepscapy.callbacks import PrintTrialModelCallback
 from deepscapy.constants import *

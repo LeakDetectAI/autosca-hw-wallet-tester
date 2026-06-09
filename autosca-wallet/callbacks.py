@@ -9,7 +9,7 @@ from keras.callbacks import Callback
 
 # Code implemented by https://github.com/titu1994/keras-one-cycle
 # Code is ported from https://github.com/fastai/fastai
-from tensorflow.python.keras.callbacks import Callback
+from keras.callbacks import Callback
 
 from deepscapy.utils import print_dictionary
 

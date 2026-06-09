@@ -5,7 +5,7 @@ import os
 import numpy as np
 from keras.optimizers import RMSprop
 from keras.utils import to_categorical
-from tensorflow.python.keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint
 from tensorflow_addons.callbacks import AverageModelCheckpoint
 from tensorflow_addons.optimizers import SWA
 
