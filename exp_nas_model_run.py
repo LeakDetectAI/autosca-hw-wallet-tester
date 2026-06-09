@@ -4,7 +4,7 @@ import time
 from datetime import timedelta
 
 import numpy as np
-from keras.saving.save import load_model
+from keras.saving import load_model
 
 from deepscapy.constants import *
 from deepscapy.experimental_utils import *

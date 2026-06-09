@@ -3,7 +3,7 @@ import math
 import os
 
 import numpy as np
-from keras.optimizers import RMSprop, SWA
+from keras.optimizers import RMSprop
 from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint
 
@@ -41,13 +41,9 @@ class SCANNModel(SCABaseModel):
             self.model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.tf'.format(self.model_name))
 
         self.model, self.scoring_model = self._construct_model_(kernel_regularizer=self.kernel_regularizer,
-                                                                kernel_initializer=self.kernel_initializer)
-        if self.weight_averaging:
-            self.model.compile(loss=self.loss_function, optimizer=SWA(self.optimizer), metrics=self.metrics)
-            self.scoring_model.compile(loss=self.loss_function, optimizer=SWA(self.optimizer), metrics=self.metrics)
-        else:
-            self.model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=self.metrics)
-            self.scoring_model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=self.metrics)
+                                                                 kernel_initializer=self.kernel_initializer)
+        self.model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=self.metrics)
+        self.scoring_model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=self.metrics)
 
 
     def _construct_model_(self, **kwargs):

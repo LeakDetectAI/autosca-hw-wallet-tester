@@ -7,7 +7,7 @@ from datetime import timedelta
 
 import keras_tuner as kt
 import numpy as np
-from keras.saving.save import load_model
+from keras.saving import load_model
 from sklearn.model_selection import train_test_split
 
 from deepscapy.constants import *
