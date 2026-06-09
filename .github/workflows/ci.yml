@@ -30,13 +30,15 @@ jobs:
           pip install .
 
       - name: Verify import
-        run: python -c "import deepscapy; print('OK: deepscapy imported successfully')"
+        run: |
+          python -c 'import deepscapy; print("OK: deepscapy imported successfully")'
 
       - name: Check GPU detection
-        run: python -c "
-import tensorflow as tf
-gpus = tf.config.list_physical_devices('GPU')
-print(f'GPUs available: {len(gpus)}')
-for gpu in gpus:
-    print(f'  {gpu}')
-"
+        run: |
+          python -c '
+          import tensorflow as tf
+          gpus = tf.config.list_physical_devices("GPU")
+          print(f"GPUs available: {len(gpus)}")
+          for gpu in gpus:
+              print(f"  {gpu}")
+          '
