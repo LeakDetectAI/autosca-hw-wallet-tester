@@ -51,7 +51,8 @@ class TimesFMBaseline(SCANNModel):
 
     def _extract_features(self, X, batch_size=256):
         # Validate that the loaded traces match the configured input dimension
-        assert X.shape[1] == self.input_dim, f"Trace dimension mismatch: expected {self.input_dim}, got {X.shape[1]}"
+        if X.shape[1] != self.input_dim:
+            raise ValueError(f"Trace dimension mismatch: expected {self.input_dim}, got {X.shape[1]}")
 
         num_traces = X.shape[0]
         pad_len = 0
@@ -82,7 +83,8 @@ class TimesFMBaseline(SCANNModel):
                 
         features = np.concatenate(all_embeddings, axis=0)
         # Validate that the extracted embedding dimension matches embedding_dim
-        assert features.shape[1] == self.embedding_dim, f"Feature dimension mismatch: expected {self.embedding_dim}, got {features.shape[1]}"
+        if features.shape[1] != self.embedding_dim:
+            raise ValueError(f"Feature dimension mismatch: expected {self.embedding_dim}, got {features.shape[1]}")
         return features
 
     def reshape_inputs(self, X, y):
@@ -123,7 +125,8 @@ class TimesFMBaseline(SCANNModel):
         
         # Derive embedding dimension from the loaded model's input shape
         embedding_dim = mlp_model.input_shape[-1]
-        assert embedding_dim is not None, "Could not determine embedding dimension from the loaded model"
+        if embedding_dim is None:
+            raise ValueError("Could not determine embedding dimension from the loaded model")
 
         instance = cls(
             model_name="loaded_timesfm",
