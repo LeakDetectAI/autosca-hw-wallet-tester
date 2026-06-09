@@ -46,51 +46,6 @@ deepscapy depends on NumPy, SciPy, matplotlib, scikit-learn, joblib and tqdm, te
 For data processing and generation you will also need and pandas.
 
 
-Quick Start (Sanity Check)
---------------------------
-Before running a full experiment, validate your environment with the **sanity profile** -- a minimal configuration that trains the ASCAD CNN baseline for 2 epochs.
-
-### 1. Install the package
-
-```
-python setup.py install
-```
-
-### 2. Download the ASCAD fixed-key dataset
-
-Place the ASCAD HDF5 file so the reader can find it at:
-
-```
-~/Downloads/ASCAD/ASCAD_desync0/ASCAD_desync0.h5
-```
-
-You can use the included `gdown` helper or download manually from the [ANSSI-FR/ASCAD repository](https://github.com/ANSSI-FR/ASCAD/tree/master/ATMEGA_AES_v1/ATM_AES_v1_fixed_key) and rename accordingly.
-
-### 3. Run the sanity command
-
-```bash
-python exp_baseline_models_run.py \
-  --dataset ASCAD_desync0 \
-  --model_name ascad_cnn_baseline \
-  --loss_function categorical_crossentropy \
-  --epochs 2 \
-  --batch_size 200
-```
-
-The same parameters are recorded in `configs/sanity_profile.json` for reference.
-
-### Expected Artifacts
-
-After a successful run, the following files are created under the project root:
-
-| Artifact | Path | Description |
-|----------|------|-------------|
-| Trained model (SavedModel format) | `trained_models/non_tuned_models/<model_name>.tf/` | Keras model weights and architecture |
-| Training log | `logs/<model_name>.log` | Per-epoch loss, accuracy, and hyperparameter summary |
-
-For the sanity profile above, `<model_name>` resolves to `ascad_desync0_ascad_cnn_baseline_700_CCE`.
-
-Models trained with NAS or ranking loss variants are stored under `trained_models/nas_models_new/` and `trained_models/non_tuned_models/` respectively. Attack results (Guessing Entropy, scores, QTE) are saved as HDF5 files under `results/`.
 
 
 License
@@ -237,6 +192,6 @@ python exp_timesfm_sanity_run.py
 
 ## Recommended Baseline
 
-For comprehensive side-channel evaluation and benchmarking, we recommend the following setup:
+For comprehensive side-channel evaluation and benchmarking:
 - **Dataset**: [ASCAD](https://github.com/ANSSI-FR/ASCAD) (specifically the Fixed Key/Variable Key variations).
-- **Model**: For advanced analysis , we recommend adopting [Google TimesFM](https://github.com/google-research/timesfm) as the baseline for time-series profiling and zero-shot attack modeling.
+- **Model**: [Google TimesFM](https://github.com/google-research/timesfm) is used as a foundation model for time-series feature extraction, where its pre-trained temporal representations are fine-tuned via an MLP classification head to predict cryptographic key leakages.

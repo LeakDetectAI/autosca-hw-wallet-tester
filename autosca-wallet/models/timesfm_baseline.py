@@ -12,7 +12,6 @@ class TimesFMBaseline(SCANNModel):
     def __init__(self, model_name, num_classes, input_dim, loss_function='categorical_crossentropy',
                  kernel_regularizer=None, kernel_initializer="glorot_uniform", optimizer=RMSprop(learning_rate=0.00001),
                  metrics=['accuracy'], weight_averaging=False, checkpoint_path='google/timesfm-2.5-200m-pytorch', **kwargs):
-        self.embedding_dim = 1280
         self.checkpoint_path = checkpoint_path
         
         # Load timesfm
@@ -21,6 +20,12 @@ class TimesFMBaseline(SCANNModel):
         self.tfm = TimesFM_2p5_200M_torch.from_pretrained(self.checkpoint_path, torch_compile=False)
         self.tfm.model.to(self.device)
         self.tfm.model.eval()
+
+        # Determine embedding dimension from TimesFM configuration (default to 1280)
+        try:
+            self.embedding_dim = self.tfm.model.config.d_model
+        except AttributeError:
+            self.embedding_dim = 1280
         
         # Call SCANNModel constructor
         super(TimesFMBaseline, self).__init__(model_name=model_name, num_classes=num_classes, input_dim=input_dim,
@@ -45,6 +50,9 @@ class TimesFMBaseline(SCANNModel):
         return model, scoring_model
 
     def _extract_features(self, X, batch_size=256):
+        # Validate that the loaded traces match the configured input dimension
+        assert X.shape[1] == self.input_dim, f"Trace dimension mismatch: expected {self.input_dim}, got {X.shape[1]}"
+
         num_traces = X.shape[0]
         pad_len = 0
         if self.input_dim % 32 != 0:
@@ -72,7 +80,10 @@ class TimesFMBaseline(SCANNModel):
                 pooled = torch.mean(output_emb, dim=1).cpu().numpy()
                 all_embeddings.append(pooled)
                 
-        return np.concatenate(all_embeddings, axis=0)
+        features = np.concatenate(all_embeddings, axis=0)
+        # Validate that the extracted embedding dimension matches embedding_dim
+        assert features.shape[1] == self.embedding_dim, f"Feature dimension mismatch: expected {self.embedding_dim}, got {features.shape[1]}"
+        return features
 
     def reshape_inputs(self, X, y):
         # Extract TimesFM embeddings
@@ -101,7 +112,7 @@ class TimesFMBaseline(SCANNModel):
         self.scoring_model = self.model
 
     @classmethod
-    def load_custom_model(cls, filepath):
+    def load_custom_model(cls, filepath, input_dim=700):
         if not os.path.exists(filepath):
             base, ext = os.path.splitext(filepath)
             for new_ext in ['.keras', '.tf', '.weights.h5']:
@@ -109,11 +120,17 @@ class TimesFMBaseline(SCANNModel):
                     filepath = base + new_ext
                     break
         mlp_model = load_model(filepath)
+        
+        # Derive embedding dimension from the loaded model's input shape
+        embedding_dim = mlp_model.input_shape[-1]
+        assert embedding_dim is not None, "Could not determine embedding dimension from the loaded model"
+
         instance = cls(
             model_name="loaded_timesfm",
             num_classes=mlp_model.output_shape[-1],
-            input_dim=700
+            input_dim=input_dim
         )
+        instance.embedding_dim = embedding_dim
         instance.model = mlp_model
         instance.scoring_model = mlp_model
         return instance

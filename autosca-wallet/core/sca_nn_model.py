@@ -6,11 +6,12 @@ import numpy as np
 from keras.optimizers import RMSprop
 from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint
-from keras.callbacks import ModelCheckpoint as AverageModelCheckpoint
 
 try:
+    from tensorflow_addons.callbacks import AverageModelCheckpoint
     from tensorflow_addons.optimizers import SWA
 except ImportError:
+    AverageModelCheckpoint = None
     SWA = None
 
 from deepscapy.callbacks import OneCycleLR
@@ -49,6 +50,8 @@ class SCANNModel(SCABaseModel):
         self.model, self.scoring_model = self._construct_model_(kernel_regularizer=self.kernel_regularizer,
                                                                 kernel_initializer=self.kernel_initializer)
         if self.weight_averaging:
+            if SWA is None:
+                raise ImportError("tensorflow_addons is required when weight_averaging is True")
             self.model.compile(loss=self.loss_function, optimizer=SWA(self.optimizer), metrics=self.metrics)
             self.scoring_model.compile(loss=self.loss_function, optimizer=SWA(self.optimizer), metrics=self.metrics)
         else:
@@ -82,6 +85,8 @@ class SCANNModel(SCABaseModel):
         if not self.weight_averaging:
             save_model = ModelCheckpoint(self.model_file)
         else:
+            if AverageModelCheckpoint is None:
+                raise ImportError("tensorflow_addons is required when weight_averaging is True")
             save_model = AverageModelCheckpoint(filepath=self.model_file, update_weights=True)
         callbacks = [save_model]
         self.logger.info(dict(batch_size=batch_size, epochs=epochs, callbacks=callbacks, verbose=verbose))
@@ -101,6 +106,8 @@ class SCANNModel(SCABaseModel):
         if not self.weight_averaging:
             save_model = ModelCheckpoint(self.model_file)
         else:
+            if AverageModelCheckpoint is None:
+                raise ImportError("tensorflow_addons is required when weight_averaging is True")
             save_model = AverageModelCheckpoint(filepath=self.model_file, update_weights=True)
         # This doesn't work for now, check later to fix the issue, update 19.02.2022 issue resolved
         lr_manager = OneCycleLR(max_lr=max_lr, batch_size=batch_size, samples=X.shape[0], end_percentage=0.2,
