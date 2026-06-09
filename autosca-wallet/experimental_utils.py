@@ -3,8 +3,7 @@ import numpy as np
 from deepscapy.constants import *
 from deepscapy.dataset_reader import *
 from deepscapy.losses.loss_functions import *
-from deepscapy.losses.test_loss_functions import binary_crossentropy_focal_loss, binary_crossentropy_focal_loss_ratio, \
-    bce_dice_loss
+
 from deepscapy.models import *
 
 __all__ = ['LF_EXTENSION', 'model_dictionary', 'cnn_rkl_baseline_dictionary', 'datasets',
@@ -21,9 +20,7 @@ LF_EXTENSION = {CATEGORICAL_CROSSENTROPY_LOSS: 'CCE',
 
 model_dictionary = {ASCAD_CNN_BASELINE: ASCADCNNBaseline,
                     ASCAD_MLP_BASELINE: ASCADMLPBaseline,
-                    CUSTOM_LENET5: CustomLeNet5,
-                    CUSTOM_LENET5_RECT: CustomLeNet5Rectangle,
-                    CUSTOM_LENET5_SQUARE: CustomLeNet5Square,
+                    TIMESFM_BASELINE: TimesFMBaseline,
                     NAS_BASIC2: NASBasic2,
                     NAS_BASIC3: NASBasic3,
                     NAS_BASIC4: NASBasic4,
@@ -65,24 +62,14 @@ datasets = {ASCAD_DESYNC0: ASCADDatasetReader, ASCAD_DESYNC50: ASCADDatasetReade
 # FOCAL_LOSS: sigmoid_focal_loss,
 loss_dictionary_train_models = {CATEGORICAL_CROSSENTROPY_LOSS: CATEGORICAL_CROSSENTROPY_LOSS,
                                 CROSS_ENTROPY_RATIO: cross_entropy_ratio(),
-                                RANKING_LOSS: ranking_loss_optimized(alpha_value=1),
-                                DICE_BCE_LOSS: bce_dice_loss(),
-                                FOCAL_LOSS_BE: binary_crossentropy_focal_loss(),
-                                FOCAL_LOSS_BER: binary_crossentropy_focal_loss_ratio(),
-                                FOCAL_LOSS_CE: categorical_crossentropy_focal_loss(),
-                                FOCAL_LOSS_CER: categorical_crossentropy_focal_loss_ratio()
+                                RANKING_LOSS: ranking_loss_optimized(alpha_value=1)
                                 }
 
 loss_dictionary_hpo_models = {CATEGORICAL_CROSSENTROPY_LOSS: CATEGORICAL_CROSSENTROPY_LOSS,
                               CROSS_ENTROPY_RATIO: cross_entropy_ratio(),
-                              RANKING_LOSS: ranking_loss_optimized(),
-                              DICE_BCE_LOSS: bce_dice_loss(),
-                              FOCAL_LOSS_BE: binary_crossentropy_focal_loss(),
-                              FOCAL_LOSS_CE: categorical_crossentropy_focal_loss()}
+                              RANKING_LOSS: ranking_loss_optimized()}
 
-loss_dictionary_attack_models = {RANKING_LOSS: ranking_loss_optimized,
-                                 FOCAL_LOSS_BE: binary_crossentropy_focal_loss,
-                                 FOCAL_LOSS_CE: categorical_crossentropy_focal_loss}
+loss_dictionary_attack_models = {RANKING_LOSS: ranking_loss_optimized}
 
 loss_dictionary_rkl_models = {ASCAD_DESYNC0: ranking_loss_optimized(alpha_value=0.5),
                               ASCAD_DESYNC0_VARIABLE: ranking_loss_optimized(alpha_value=0.5),

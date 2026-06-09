@@ -5,9 +5,14 @@ import os
 import numpy as np
 from keras.optimizers import RMSprop
 from keras.utils import to_categorical
-from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tensorflow_addons.callbacks import AverageModelCheckpoint
-from tensorflow_addons.optimizers import SWA
+from keras.callbacks import ModelCheckpoint
+
+try:
+    from tensorflow_addons.callbacks import AverageModelCheckpoint
+    from tensorflow_addons.optimizers import SWA
+except ImportError:
+    AverageModelCheckpoint = None
+    SWA = None
 
 from deepscapy.callbacks import OneCycleLR
 from deepscapy.constants import ONED_CNN, TWOD_CNN_RECT, TWOD_CNN_SQR, MLP, TRAINED_MODELS_TUNED
@@ -38,13 +43,15 @@ class SCANNModel(SCABaseModel):
             raise Warning('Input reshaping not defined for the specified model type {}'.format(model_type))
         # check the model path, make the default one in the deep-learning-sca, fileformat dataset_type_model_lf
         if '_tuned' not in self.model_name:
-            self.model_file = os.path.join(get_trained_models_path(), '{}.tf'.format(self.model_name))
+            self.model_file = os.path.join(get_trained_models_path(), '{}.keras'.format(self.model_name))
         else:
-            self.model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.tf'.format(self.model_name))
+            self.model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.keras'.format(self.model_name))
 
         self.model, self.scoring_model = self._construct_model_(kernel_regularizer=self.kernel_regularizer,
                                                                 kernel_initializer=self.kernel_initializer)
         if self.weight_averaging:
+            if SWA is None:
+                raise ImportError("tensorflow_addons is required when weight_averaging is True")
             self.model.compile(loss=self.loss_function, optimizer=SWA(self.optimizer), metrics=self.metrics)
             self.scoring_model.compile(loss=self.loss_function, optimizer=SWA(self.optimizer), metrics=self.metrics)
         else:
@@ -78,6 +85,8 @@ class SCANNModel(SCABaseModel):
         if not self.weight_averaging:
             save_model = ModelCheckpoint(self.model_file)
         else:
+            if AverageModelCheckpoint is None:
+                raise ImportError("tensorflow_addons is required when weight_averaging is True")
             save_model = AverageModelCheckpoint(filepath=self.model_file, update_weights=True)
         callbacks = [save_model]
         self.logger.info(dict(batch_size=batch_size, epochs=epochs, callbacks=callbacks, verbose=verbose))
@@ -97,6 +106,8 @@ class SCANNModel(SCABaseModel):
         if not self.weight_averaging:
             save_model = ModelCheckpoint(self.model_file)
         else:
+            if AverageModelCheckpoint is None:
+                raise ImportError("tensorflow_addons is required when weight_averaging is True")
             save_model = AverageModelCheckpoint(filepath=self.model_file, update_weights=True)
         # This doesn't work for now, check later to fix the issue, update 19.02.2022 issue resolved
         lr_manager = OneCycleLR(max_lr=max_lr, batch_size=batch_size, samples=X.shape[0], end_percentage=0.2,

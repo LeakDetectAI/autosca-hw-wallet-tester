@@ -46,51 +46,6 @@ deepscapy depends on NumPy, SciPy, matplotlib, scikit-learn, joblib and tqdm, te
 For data processing and generation you will also need and pandas.
 
 
-Quick Start (Sanity Check)
---------------------------
-Before running a full experiment, validate your environment with the **sanity profile** -- a minimal configuration that trains the ASCAD CNN baseline for 2 epochs.
-
-### 1. Install the package
-
-```
-python setup.py install
-```
-
-### 2. Download the ASCAD fixed-key dataset
-
-Place the ASCAD HDF5 file so the reader can find it at:
-
-```
-~/Downloads/ASCAD/ASCAD_desync0/ASCAD_desync0.h5
-```
-
-You can use the included `gdown` helper or download manually from the [ANSSI-FR/ASCAD repository](https://github.com/ANSSI-FR/ASCAD/tree/master/ATMEGA_AES_v1/ATM_AES_v1_fixed_key) and rename accordingly.
-
-### 3. Run the sanity command
-
-```bash
-python exp_baseline_models_run.py \
-  --dataset ASCAD_desync0 \
-  --model_name ascad_cnn_baseline \
-  --loss_function categorical_crossentropy \
-  --epochs 2 \
-  --batch_size 200
-```
-
-The same parameters are recorded in `configs/sanity_profile.json` for reference.
-
-### Expected Artifacts
-
-After a successful run, the following files are created under the project root:
-
-| Artifact | Path | Description |
-|----------|------|-------------|
-| Trained model (SavedModel format) | `trained_models/non_tuned_models/<model_name>.tf/` | Keras model weights and architecture |
-| Training log | `logs/<model_name>.log` | Per-epoch loss, accuracy, and hyperparameter summary |
-
-For the sanity profile above, `<model_name>` resolves to `ascad_desync0_ascad_cnn_baseline_700_CCE`.
-
-Models trained with NAS or ranking loss variants are stored under `trained_models/nas_models_new/` and `trained_models/non_tuned_models/` respectively. Attack results (Guessing Entropy, scores, QTE) are saved as HDF5 files under `results/`.
 
 
 License
@@ -207,3 +162,36 @@ If you use this toolkit in your research, please cite our work:
 ## 📧 Contact Information
 For any questions or feedback, please contact Pritha Gupta at prithagupta.nsit@icloud.com and marketing@tickervalue.com
 
+## Quick Start (Sanity Check)
+
+To quickly validate your environment, download the ASCAD dataset to `datasets/ASCAD.h5` and execute the sanity check scripts using a reduced number of traces and epochs.
+
+### 1. CNN Baseline Sanity Check
+Run the sanity check for the CNN baseline model:
+```bash
+python exp_sanity_run.py
+```
+
+**Expected Artifacts:**
+- A completed single-epoch training pass over a subset of traces.
+- **`sanity_model.weights.h5`**: The learned weights of the baseline CNN model saved to the local directory.
+- **`trained_models/non_tuned_models/sanity_ascad_cnn.keras`**: The trained baseline CNN model.
+- **Attack Results Console Output**: Guessing Entropy and Mean Rank vulnerability scores printed to the console.
+
+### 2. TimesFM Baseline Sanity Check
+Run the sanity check for the Google TimesFM baseline model:
+```bash
+python exp_timesfm_sanity_run.py
+```
+
+**Expected Artifacts:**
+- Extraction of TimesFM embeddings and a single-epoch training pass over the MLP head.
+- **`sanity_timesfm_model.weights.h5`**: The learned weights of the TimesFM model head saved to the local directory.
+- **`trained_models/non_tuned_models/sanity_timesfm_baseline.keras`**: The trained MLP head model.
+- **Attack Results Console Output**: Guessing Entropy and Mean Rank vulnerability scores printed to the console.
+
+## Recommended Baseline
+
+For comprehensive side-channel evaluation and benchmarking:
+- **Dataset**: [ASCAD](https://github.com/ANSSI-FR/ASCAD) (specifically the Fixed Key/Variable Key variations).
+- **Model**: [Google TimesFM](https://github.com/google-research/timesfm) is used as a foundation model for time-series feature extraction, where its pre-trained temporal representations are fine-tuned via an MLP classification head to predict cryptographic key leakages.
