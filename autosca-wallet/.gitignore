@@ -2,3 +2,4 @@
 /trained_models/
 /results/
 /rkl_baseline_models_attack_results/
+*.DS_Store
