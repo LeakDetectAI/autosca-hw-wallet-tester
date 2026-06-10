@@ -118,7 +118,7 @@ if __name__ == "__main__":
     condition = False
     model_file = os.path.join(get_trained_models_path(folder=TRAINED_MODELS_NAS_NEW), f'{model_name}.tf')
     attack_model = _load_attack_model(dataset_name, model_file, model_name, loss_function, logger)
-    job_id = str(os.environ["SLURM_JOB_ID"])
+    job_id = os.environ.get("SLURM_JOB_ID", "local")
     logger.info(f"Slurm job id {job_id}")
     print(f"Slurm job id {job_id}")
     if attack_model is not None:

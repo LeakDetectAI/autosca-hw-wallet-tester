@@ -11,9 +11,9 @@ from autokeras.engine import head as head_module
 from autokeras.utils import layer_utils, utils
 from autokeras.utils import types
 from keras import layers, losses, activations
-from tensorflow._api.v2 import nest
-from tensorflow.python.util import nest
 import keras
+
+nest = tf.nest
 
 class ImageInputExt(Input):
     """Input node for image data.
@@ -96,7 +96,7 @@ class ConvBlockExt(ak.ConvBlock):
                 for j in range(utils.add_to_hp(self.num_layers, hp)):
                     kernel_size = utils.add_to_hp(self.kernel_size, hp)
                     conv_padding = 'same'
-                    filters = utils.add_to_hp(self.filters, hp, "filters_{i}_{j}".format(i=i, j=j)),
+                    filters = utils.add_to_hp(self.filters, hp, "filters_{i}_{j}".format(i=i, j=j))
                     output_node = conv(filters, kernel_size, padding=conv_padding, activation=activation,
                                        kernel_initializer="he_uniform")(output_node)
                     if use_batch_norm:

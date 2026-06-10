@@ -93,7 +93,7 @@ class NASModel(BaseEstimator, ClassifierMixin):
             new_features = int(np.floor(np.sqrt(features)) + 1)
             n = new_features * new_features - features
             constant_values = np.mean(X)
-            X = np.lib.pad(X, ((0, 0), (0, n)), 'constant', constant_values=constant_values)
+            X = np.pad(X, ((0, 0), (0, n)), 'constant', constant_values=constant_values)
             X = X.reshape(-1, new_features, new_features, 1)
         elif self.reshape_type == ONED_CNN:
             X = X.reshape((X.shape[0], X.shape[1], 1))

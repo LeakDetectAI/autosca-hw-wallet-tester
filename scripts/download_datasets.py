@@ -12,11 +12,20 @@ import argparse
 import os
 import sys
 
-try:
-    import gdown
-except ImportError:
-    print("gdown is required. Install it with: pip install gdown")
-    sys.exit(1)
+gdown = None
+
+
+def require_gdown():
+    global gdown
+    if gdown is not None:
+        return gdown
+    try:
+        import gdown as gdown_module
+    except ImportError:
+        print("gdown is required. Install it with: pip install gdown")
+        sys.exit(1)
+    gdown = gdown_module
+    return gdown
 
 
 # Google Drive folder containing organised datasets
@@ -32,10 +41,11 @@ DATASET_URLS = {
 
 
 def download_folder(dest: str) -> bool:
+    gdown_module = require_gdown()
     print(f"Downloading dataset folder from Google Drive (ID: {FOLDER_ID}) ...")
     print(f"Destination: {dest}")
     try:
-        gdown.download_folder(id=FOLDER_ID, output=dest, quiet=False)
+        gdown_module.download_folder(id=FOLDER_ID, output=dest, quiet=False)
         return True
     except Exception as e:
         print(f"Folder download failed: {e}")
@@ -43,6 +53,7 @@ def download_folder(dest: str) -> bool:
 
 
 def download_fallback(dest: str) -> None:
+    gdown_module = require_gdown()
     print("Falling back to individual downloads ...\n")
     for name, url in DATASET_URLS.items():
         out_dir = os.path.join(dest, "ASCAD", name)
@@ -53,7 +64,7 @@ def download_fallback(dest: str) -> None:
             continue
         print(f"Downloading {name} -> {out_file}")
         try:
-            gdown.download(url, output=out_file, quiet=False)
+            gdown_module.download(url, output=out_file, quiet=False)
         except Exception as e:
             print(f"  Failed: {e}")
 

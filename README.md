@@ -35,9 +35,65 @@ Its Ranking Loss (RKL) implementation is based on https://github.com/gabzai/Rank
 
 Installation
 ------------
-You can install deepsca using::
+The recommended setup uses the included Conda environment file. It creates an `autosca` environment with Conda-managed scientific packages and pip-managed TensorFlow/Keras packages.
 
-	python setup.py install
+Create the environment from `environment.yml`:
+
+```bash
+conda env create -f environment.yml
+```
+
+Activate it:
+
+```bash
+conda activate autosca
+```
+
+Check the environment:
+
+```bash
+python --version
+conda list
+```
+
+Install the local package inside the active environment:
+
+```bash
+python setup.py install
+```
+
+If `environment.yml` changes later, update the environment with:
+
+```bash
+conda env update -f environment.yml --prune
+```
+
+To remove the environment completely:
+
+```bash
+conda remove -n autosca --all
+```
+
+In short, the first-time setup workflow is:
+
+```bash
+# create env
+conda env create -f environment.yml
+
+# activate
+conda activate autosca
+
+# install package
+python setup.py install
+```
+
+If you need to edit the environment definition first, save your changes to `environment.yml` before running `conda env create`.
+
+You can also install deepscapy directly in an already prepared Python environment using:
+
+```bash
+python setup.py install
+```
 
 
 Dependencies
@@ -53,6 +109,8 @@ Before running a full experiment, validate your environment with the **sanity pr
 ### 1. Install the package
 
 ```
+conda env create -f environment.yml
+conda activate autosca
 python setup.py install
 ```
 
@@ -206,4 +264,3 @@ If you use this toolkit in your research, please cite our work:
 ```
 ## 📧 Contact Information
 For any questions or feedback, please contact Pritha Gupta at prithagupta.nsit@icloud.com and marketing@tickervalue.com
-
