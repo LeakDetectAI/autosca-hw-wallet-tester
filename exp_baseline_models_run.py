@@ -52,10 +52,10 @@ def _load_attack_model(dataset, model_file, model_name, loss_function):
 
 def check_if_model_trained(model_name, loss_function, dataset):
     if '_tuned' not in model_name:
-        model_file = os.path.join(get_trained_models_path(), '{}.tf'.format(model_name))
+        model_file = os.path.join(get_trained_models_path(), '{}.keras'.format(model_name))
     else:
-        model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.tf'.format(model_name))
-    if_exist = os.path.isdir(model_file)
+        model_file = os.path.join(get_trained_models_path(TRAINED_MODELS_TUNED), '{}.keras'.format(model_name))
+    if_exist = os.path.exists(model_file)
     attack_model = _load_attack_model(dataset, model_file, model_name, loss_function)
     if_load_model = attack_model is not None
 

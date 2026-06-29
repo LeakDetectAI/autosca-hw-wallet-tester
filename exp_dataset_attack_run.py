@@ -140,7 +140,7 @@ if __name__ == "__main__":
                                num_attacks=num_attacks, total_attack_traces=total_attack_traces,
                                dataset_type=dataset_name, plaintext_ciphertext=plaintext_ciphertext_attack, mask=mask,
                                offset=offset, real_key=real_key, byte=byte, use_tuner=use_tuner,
-                               num_classes=num_classes, n_folds=n_folds, seed=seed, shuffle=True, extension='tf',
+                               num_classes=num_classes, n_folds=n_folds, seed=seed, shuffle=True, extension='keras',
                                reshape_type=reshape_type, leakage_model=leakage_model)
     attack_params = dict(X_attack=X_attack, Y_attack=Y_attack, model_evaluate_args=model_evaluate_args,
                          model_predict_args=model_predict_args)

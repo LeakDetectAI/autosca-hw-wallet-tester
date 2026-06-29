@@ -55,14 +55,14 @@ class NASModel(BaseEstimator, ClassifierMixin):
         self.project_name = loss_function_name.lower()
 
         self.best_model_file_path = os.path.join(get_trained_models_path(folder=TRAINED_MODELS_NAS_NEW),
-                                                 f'{model_name}.tf')
+                                                 f'{model_name}.keras')
         self.logger.info(f"Nas Model Directory {self.directory} Project Name {self.project_name}")
         self.logger.info(f"Best Model stored at {self.best_model_file_path}")
 
-        self.n_filters = [2, 8, 16, 32, 64, 128, 256]
-        self.n_units = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+        self.n_filters = [8, 16, 32, 64, 128, 256, 512]
+        self.n_units = [32, 64, 128, 256, 512, 1024, 2048]
         self.dropout = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
-        self.kernel_size = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        self.kernel_size = [3, 5, 7, 9, 11, 13, 15, 17, 19]
         self.auto_model = self._construct_model_()
 
 
