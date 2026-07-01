@@ -43,21 +43,24 @@ class GraphExt(graph_module.Graph):
                 decay_steps=num_train_steps,
                 end_learning_rate=0.0,
             )
-            if warmup_steps:
+            if warmup_steps and hasattr(keras_layers, 'WarmUp'):
                 lr_schedule = keras_layers.WarmUp(
                     initial_learning_rate=learning_rate,
                     decay_schedule_fn=lr_schedule,
                     warmup_steps=warmup_steps,
                 )
 
-            optimizer = keras_layers.AdamWeightDecay(
-                learning_rate=lr_schedule,
-                weight_decay_rate=0.01,
-                beta_1=0.9,
-                beta_2=0.999,
-                epsilon=1e-6,
-                exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"],
-            )
+            if hasattr(keras_layers, 'AdamWeightDecay'):
+                optimizer = keras_layers.AdamWeightDecay(
+                    learning_rate=lr_schedule,
+                    weight_decay_rate=0.01,
+                    beta_1=0.9,
+                    beta_2=0.999,
+                    epsilon=1e-6,
+                    exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"],
+                )
+            else:
+                optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
 
         model.compile(
             optimizer=optimizer, metrics=self._get_metrics(), loss=self._get_loss()

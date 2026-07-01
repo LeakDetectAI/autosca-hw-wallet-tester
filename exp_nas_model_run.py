@@ -116,7 +116,7 @@ if __name__ == "__main__":
     start_time = time.time()
     # objective = Objective("val_mean_rank", direction="min")
     condition = False
-    model_file = os.path.join(get_trained_models_path(folder=TRAINED_MODELS_NAS_NEW), f'{model_name}.tf')
+    model_file = os.path.join(get_trained_models_path(folder=TRAINED_MODELS_NAS_NEW), f'{model_name}.keras')
     attack_model = _load_attack_model(dataset_name, model_file, model_name, loss_function, logger)
     job_id = os.environ.get("SLURM_JOB_ID", "local")
     logger.info(f"Slurm job id {job_id}")

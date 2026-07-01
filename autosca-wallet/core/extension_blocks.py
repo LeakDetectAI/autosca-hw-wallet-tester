@@ -87,7 +87,7 @@ class ConvBlockExt(ak.ConvBlock):
 
         self.dropout = hp.Choice("dropout", [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], default=0.0)
         self.logger.info("Batch Norm {}, Pooling Name {}, dropout {}".format(use_batch_norm, pool_name, self.dropout))
-        activation = hp.Choice('activation', values=["relu", "selu", "elu"])
+        activation = hp.Choice('activation', values=["relu", "selu", "elu", "swish"])
         if isinstance(conv, layers.Conv1D):
             strides_hp = hp.Choice('strides', [2, 3, 4, 5, 6, 7, 8, 9, 10], default=2)
             pool_size_hp = hp.Choice('pool_size', [2, 3, 4, 5], default=2)
@@ -142,7 +142,7 @@ class ConvBlockExt(ak.ConvBlock):
 
 class DenseBlockExt(ak.DenseBlock):
     def build(self, hp, inputs=None):
-        activation = hp.Choice('activation', values=["relu", "selu", "elu"])
+        activation = hp.Choice('activation', values=["relu", "selu", "elu", "swish"])
         inputs = nest.flatten(inputs)
         utils.validate_num_inputs(inputs, 1)
         input_node = inputs[0]

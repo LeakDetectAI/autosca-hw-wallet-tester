@@ -78,7 +78,7 @@ if __name__ == "__main__":
                             if leakage_model == HW:
                                 model_name = f"{model_name}_{leakage_model.lower()}"
                             model_file = os.path.join(get_trained_models_path(folder=TRAINED_MODELS_NAS_NEW),
-                                                      '{}.tf'.format(model_name))
+                                                      '{}.keras'.format(model_name))
                             logger.info('Model name {}'.format(model_name))
                             logger.info("Model stored at {}".format(model_file))
                             attack_model = _load_attack_model(dataset_name, model_file, model_name, loss_function, logger)
