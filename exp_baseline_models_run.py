@@ -7,7 +7,7 @@ from datetime import timedelta
 
 import keras_tuner as kt
 import numpy as np
-from keras.saving.save import load_model
+from keras.saving import load_model
 from sklearn.model_selection import train_test_split
 
 from deepscapy.constants import *
@@ -216,6 +216,6 @@ if __name__ == "__main__":
     end_time = time.time()
     time_taken = timedelta(seconds=(end_time - start_time))
     logger.info('The total time elapsed for model {} is {}'.format(model_name, time_taken))
-    logger.info(f"Cluster ID: {os.environ['SLURM_JOB_ID']}")
+    logger.info(f"Cluster ID: {os.environ.get('SLURM_JOB_ID', 'local')}")
     if check_if_exist:
         logger.info(f"Model {model_name} already Trained")

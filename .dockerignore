@@ -1,0 +1,13 @@
+.git/
+.gitignore
+.github/
+.idea/
+.DS_Store
+__pycache__/
+*.pyc
+logs/
+trained_models/
+results/
+nas_trials_directory_new/
+datasets/
+.DS_Store

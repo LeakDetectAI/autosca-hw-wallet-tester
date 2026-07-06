@@ -39,8 +39,8 @@ class CHESCTFDatasetReader(DatasetReader, metaclass=ABCMeta):
         # Load profiling traces
         self.X_profiling = np.array(in_file['Profiling_traces/traces'], dtype=np.float32)
         self.X_attack = np.array(in_file['Attack_traces/traces'], dtype=np.float32)
-        self.Y_profiling = np.array(in_file['Profiling_traces/labels'], dtype=np.int)
-        self.Y_attack = np.array(in_file['Attack_traces/labels'], dtype=np.int)
+        self.Y_profiling = np.array(in_file['Profiling_traces/labels'], dtype=np.int64)
+        self.Y_attack = np.array(in_file['Attack_traces/labels'], dtype=np.int64)
         self.Y_profiling_hw = self.calculate_HW(self.Y_profiling)
         self.Y_attack_hw = self.calculate_HW(self.Y_attack)
 

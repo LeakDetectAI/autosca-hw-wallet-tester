@@ -16,8 +16,6 @@ from keras import backend as K
 from keras.optimizers import Adam, SGD, RMSprop, Nadam, Adagrad
 from keras.regularizers import l2
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
-from tensorflow.core.protobuf.config_pb2 import ConfigProto
-from tensorflow.python.client.session import Session
 
 from deepscapy.constants import *
 
@@ -89,24 +87,12 @@ def setup_random_seed(seed=1234):
     logger.info("Devices {}".format(devices))
     n_gpus = len(devices)
     logger.info("Number of GPUS {}".format(n_gpus))
-    if n_gpus == 0:
-        config = ConfigProto(
-            intra_op_parallelism_threads=1,
-            inter_op_parallelism_threads=1,
-            allow_soft_placement=True,
-            log_device_placement=False,
-            device_count={"CPU": multiprocessing.cpu_count() - 2},
-        )
+    if n_gpus > 0:
+        for gpu in devices:
+            tf.config.experimental.set_memory_growth(gpu, True)
     else:
-        config = ConfigProto(
-            allow_soft_placement=True,
-            log_device_placement=True,
-            intra_op_parallelism_threads=2,
-            inter_op_parallelism_threads=2,
-        )
-        config.gpu_options.allow_growth = True
-    sess = Session(config=config)
-    K.set_session(sess)
+        tf.config.threading.set_intra_op_parallelism_threads(1)
+        tf.config.threading.set_inter_op_parallelism_threads(1)
 
 def create_dir_recursively(path, is_file_path=False):
     if is_file_path:

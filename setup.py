@@ -14,12 +14,14 @@ with open(REQUIREMENTS_FILE) as f:
     install_reqs = f.read().splitlines()
 
 if __name__ == "__main__":
+    _pkgs = find_packages()
     setup(name=DISTNAME,
           version=VERSION,
           maintainer=MAINTAINER,
           maintainer_email=MAINTAINER_EMAIL,
           description=DESCRIPTION,
-          packages=find_packages(),
+          packages=[p.replace('autosca-wallet', 'deepscapy') for p in _pkgs],
+          package_dir={'deepscapy': 'autosca-wallet'},
           install_requires=install_reqs,
           package_data={'notebooks': ['*']},
           include_package_data=True)
