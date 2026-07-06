@@ -1,6 +1,9 @@
 import os
 import numpy as np
-import torch
+try:
+    import torch
+except ImportError:
+    torch = None
 from keras.models import Model, load_model
 from keras.layers import Dense, Dropout, Input, BatchNormalization, Activation
 from keras.optimizers import RMSprop
@@ -12,11 +15,16 @@ class TimesFMBaseline(SCANNModel):
     def __init__(self, model_name, num_classes, input_dim, loss_function='categorical_crossentropy',
                  kernel_regularizer=None, kernel_initializer="glorot_uniform", optimizer=RMSprop(learning_rate=0.00001),
                  metrics=['accuracy'], weight_averaging=False, checkpoint_path='google/timesfm-2.5-200m-pytorch', **kwargs):
+        if torch is None:
+            raise ImportError("TimesFMBaseline requires torch to be installed. Please install PyTorch to use this model.")
         self.checkpoint_path = checkpoint_path
         
         # Load timesfm
         from timesfm.timesfm_2p5.timesfm_2p5_torch import TimesFM_2p5_200M_torch
-        self.device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
+        if os.environ.get("FORCE_CPU", "").lower() in ["true", "1", "yes"]:
+            self.device = "cpu"
+        else:
+            self.device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
         self.tfm = TimesFM_2p5_200M_torch.from_pretrained(self.checkpoint_path, torch_compile=False)
         self.tfm.model.to(self.device)
         self.tfm.model.eval()
@@ -80,6 +88,13 @@ class TimesFMBaseline(SCANNModel):
                 # Mean pool over patch dimension
                 pooled = torch.mean(output_emb, dim=1).cpu().numpy()
                 all_embeddings.append(pooled)
+                
+                # Explicitly clean up memory to prevent leakage on macOS (MPS)
+                del inputs, masks, outputs, output_emb, pooled
+                if self.device == "mps":
+                    torch.mps.empty_cache()
+                elif self.device == "cuda":
+                    torch.cuda.empty_cache()
                 
         features = np.concatenate(all_embeddings, axis=0)
         # Validate that the extracted embedding dimension matches embedding_dim
