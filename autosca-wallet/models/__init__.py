@@ -6,6 +6,8 @@ from .cnn_rkl_aes_hd_baseline import CNNRankingLossAESHDBaseline
 from .cnn_rkl_ascad_desync0_baseline import CNNRankingLossASCADDesync0Baseline
 from .cnn_rkl_ascad_desync100_baseline import CNNRankingLossASCADDesync100Baseline
 from .cnn_rkl_ascad_desync50_baseline import CNNRankingLossASCADDesync50Baseline
+from .timesfm_baseline import TimesFMBaseline
 from .custom_lenet5 import CustomLeNet5, CustomLeNet5Rectangle, CustomLeNet5Square
 from .behavioral_cnn_baseline import BehavioralCNNBaseline
 from .nas_models import *
+

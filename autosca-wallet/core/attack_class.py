@@ -294,7 +294,10 @@ class AttackModel(metaclass=ABCMeta):
                 trained_models_path = get_trained_models_path()
             model_file_name = os.path.join(trained_models_path, '{}.{}'.format(self.model_name, self.extension))
             self.logger.info("Model stored at {}".format(model_file_name))
-            if self.loss_name == CATEGORICAL_CROSSENTROPY_LOSS:
+            
+            if hasattr(self.model_class, 'load_custom_model'):
+                attack_model = self.model_class.load_custom_model(model_file_name)
+            elif self.loss_name == CATEGORICAL_CROSSENTROPY_LOSS:
                 attack_model = load_model(model_file_name)
             else:
                 custom_objects = {'loss': loss_dictionary_train_models[self.loss_name]}
